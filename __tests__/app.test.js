@@ -3,9 +3,21 @@ const seed = require("../db/seeds/seed");
 const data = require("../db/data/test-data/index");
 const request = require("supertest");
 const app = require("../app");
+const endpoints = require("../endpoints.json")
 
 beforeEach(() => seed(data));
 afterAll(() => db.end());
+
+describe("/api", () => {
+    it("GET:200 - responds with an object detailing all available endpoints", () => {
+        return request(app)
+        .get("/api")
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.endpoints).toEqual(endpoints)
+        })
+    })
+})
 
 describe("/api/topics", () => {
     describe("GET:200 - get all topics successfully", () => {
