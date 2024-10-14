@@ -1,4 +1,4 @@
-const { fetchAllTopics, fetchArticleById, fetchAllArticles} = require("../models/news-models")
+const { fetchAllTopics, fetchArticleById, fetchAllArticles, fetchCommentsByArticleId} = require("../models/news-models")
 
 exports.getAllTopics = (request, response, next) => {
     fetchAllTopics()
@@ -36,3 +36,22 @@ exports.getAllArticles = (request, response, next) => {
     .catch(next)
 }
 
+exports.getCommentsByArticleId = (request, response, next) => {
+    const { article_id } = request.params;
+    fetchArticleById(article_id)
+    .then((article) => {
+        if (!article) {
+            return response.status(404).send({ msg: 'Article not found' })
+        }
+        return fetchCommentsByArticleId(article_id)
+        })
+        .then((comments) => {
+            response.status(200).send({ comments }) 
+        })
+        .catch((error) => {
+            if (error.code === '22P02') {
+                return response.status(400).send({ msg: 'Invalid article ID' });
+            }
+            next(error);
+        })
+}
