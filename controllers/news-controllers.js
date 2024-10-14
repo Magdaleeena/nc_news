@@ -1,4 +1,4 @@
-const { fetchAllTopics, fetchArticleById} = require("../models/news-models")
+const { fetchAllTopics, fetchArticleById, fetchAllArticles} = require("../models/news-models")
 
 exports.getAllTopics = (request, response, next) => {
     fetchAllTopics()
@@ -10,7 +10,7 @@ exports.getAllTopics = (request, response, next) => {
     })
 
 }
-exports.getArticlesById = (request, response) => {
+exports.getArticlesById = (request, response, next) => {
     const { article_id } = request.params;
     fetchArticleById(article_id)
     .then((articleData) => {
@@ -25,5 +25,14 @@ exports.getArticlesById = (request, response) => {
         }
         next(error)
     })
+}
+
+exports.getAllArticles = (request, response, next) => {
+    const { sort_by, order, topic } = request.query;
+    fetchAllArticles(sort_by, order, topic)
+    .then((articles) => {
+        response.status(200).send({articles})
+    })
+    .catch(next)
 }
 
