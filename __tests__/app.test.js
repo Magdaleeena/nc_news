@@ -4,6 +4,7 @@ const data = require("../db/data/test-data/index");
 const request = require("supertest");
 const app = require("../app");
 const endpoints = require("../endpoints.json")
+require('jest-sorted');
 
 beforeEach(() => seed(data));
 afterAll(() => db.end());
@@ -87,3 +88,53 @@ describe("GET - /api/articles/:article_id", () => {
     })
     })
 })
+
+describe("GET - /api/articles", () => {
+    it("GET:200 - responds with an array of articles with the correct properties", () => {
+        return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body }) => {
+            expect(Array.isArray(body.articles)).toBe(true);
+            expect(body.articles.length).not.toBe(0);
+            body.articles.forEach(article => {
+                expect(article).toHaveProperty('author');
+                expect(article).toHaveProperty('title');
+                expect(article).toHaveProperty('article_id');
+                expect(article).toHaveProperty('topic');
+                expect(article).toHaveProperty('created_at');
+                expect(article).toHaveProperty('votes');
+                expect(article).toHaveProperty('article_img_url');
+                expect(article).toHaveProperty('comment_count');
+                expect(article).not.toHaveProperty('body'); 
+            })
+        })
+    })
+    it("GET:200 - responds with articles sorted by created_at in descending order", () => {
+        return request(app)
+            .get("/api/articles")
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.articles).toBeSortedBy('created_at', { descending: true });
+            });
+    })
+    describe("Error handling", () => {
+        it("GET:400 - returns an error when order is invalid", () => {
+            return request(app)
+            .get("/api/articles?order=invalid_order")
+            .expect(400)
+            .then(({ body }) => {
+                expect(body).toEqual({ msg: "Invalid order query" })
+            })
+        })
+        it("GET:404 - returns an error when the topic does not exist", () => {
+            return request(app)
+            .get("/api/articles?topic=nonexistent_topic")
+            .expect(404)
+            .then(({ body }) => {
+                expect(body).toEqual({ msg: "Not found" });
+            }) 
+        })
+    })
+})
+
