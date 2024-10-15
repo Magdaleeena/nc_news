@@ -3,7 +3,7 @@ const app = express();
 const endpoints = require("./endpoints.json");
 
 const { psqlErrorHandlerOne, psqlErrorHandlerTwo, customErrorHandler, serverErrorHandler } = require("./error-handlers");
-const { getAllTopics, getArticlesById, getAllArticles, getCommentsByArticleId, createComment } = require("./controllers/news-controllers");
+const { getAllTopics, getArticlesById, getAllArticles, getCommentsByArticleId, createComment, patchArticleVotes } = require("./controllers/news-controllers");
 
 app.use(express.json());
 
@@ -19,7 +19,9 @@ app.get("/api/articles", getAllArticles);
 
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 
-app.post("/api/articles/:article_id/comments", createComment)
+app.post("/api/articles/:article_id/comments", createComment);
+
+app.patch("/api/articles/:article_id", patchArticleVotes);
 
 app.all("*", (request, response, next) => {
     response.status(404).send({msg: 'Path not found'})

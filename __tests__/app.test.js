@@ -232,3 +232,52 @@ describe("POST - /api/articles/:article_id/comments", () => {
     })
 })
 
+describe("PATCH - /api/articles/:article_id", () => {
+    it("PATCH:200 - updates the article votes and responds with the updated article", () => {
+        const newVote = { inc_votes: 1}
+        return request(app)
+        .patch("/api/articles/1")
+        .send(newVote)
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.article).toHaveProperty('article_id', 1)
+            expect(body.article).toHaveProperty('votes')
+            expect(body.article.votes).toBeGreaterThan(0)
+        })
+    })
+
+    describe("Error handling", () => {
+        it("PATCH:400 - return an error when inc_votes is not a number", () => {
+        const newVote = { inc_votes: '1'}
+            return request(app)
+            .patch("/api/articles/1")
+            .send(newVote)
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Invalid type')
+            })
+        })
+        it("PATCH:400 - responds with an error message for an invalid article_id", () => {
+        const newVote = { inc_votes: '5'}
+            return request(app)
+            .patch("/api/articles/abc")
+            .send(newVote)
+            .expect(400) 
+            .then(({ body }) => {
+                expect(body.msg).toBe('Invalid type')
+            })  
+        })
+        it("PATCH:404 - returns an error when article does not exist", () => {
+            const newVote = { inc_votes: 3}
+            return request(app)
+            .patch("/api/articles/999")
+            .send(newVote)
+            .expect(404)
+            .then(({ body }) => {
+                expect(body).toEqual({ msg: 'Article not found' })
+            })
+        })
+    })
+    
+})
+
