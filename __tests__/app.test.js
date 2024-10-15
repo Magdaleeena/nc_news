@@ -175,3 +175,60 @@ describe("GET - /api/articles/:article_id/comments", () => {
     })
 })
 
+describe("POST - /api/articles/:article_id/comments", () => {
+    it("POST:200 - adds a new comment and returns it", () => {
+        const newComment = {
+            body: "This is so inspiring! Really great article.",
+            username: "butter_bridge"
+        }
+        return request(app)
+        .post("/api/articles/1/comments")
+        .expect(201)
+        .send(newComment)
+        .then(({ body }) => {
+            expect(body.comment).toEqual(expect.objectContaining({
+                body: newComment.body,
+                author: newComment.username,
+                article_id: 1
+            }))
+        })
+    })
+    describe("Error handling", () => {
+        it("POST:400 - returns an error when missing fields", () => {
+            const invalidComment = {
+                body: "I really enjoy reading your articles, your way of thinking is so down to earth."
+            }
+            return request(app)
+            .post("/api/articles/1/comments")
+            .expect(400)
+            .send(invalidComment)
+            .then(({ body }) => {
+                expect(body).toEqual({ msg: 'Missing required fields'})
+            })
+        })
+        it("POST:400 - returns an error when there are no fields", () => {
+            const invalidComment = {}
+            return request(app)
+            .post("/api/articles/1/comments")
+            .expect(400)
+            .send(invalidComment)
+            .then(({ body }) => {
+                expect(body).toEqual({ msg: 'Missing required fields'})
+            })
+        })
+        it("POST:404 - returns an error when article_id does not exists", () => {
+            const newComment = {
+                body: "This should be a headline!",
+                username: "icellusedkars"
+            }
+            return request(app)
+            .post("/api/articles/999/comments")
+            .send(newComment)
+            .expect(404)
+            .then(({ body }) => {
+                expect(body).toEqual({ msg: 'Article not found' })
+            })
+        })
+    })
+})
+
