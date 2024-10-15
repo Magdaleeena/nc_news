@@ -39,11 +39,8 @@ exports.getAllArticles = (request, response, next) => {
 exports.getCommentsByArticleId = (request, response, next) => {
     const { article_id } = request.params;
     fetchArticleById(article_id)
-    .then((article) => {
-        if (!article) {
-            response.status(404).send({ msg: 'Article not found' })
-        }
-        return fetchCommentsByArticleId(article_id)
+    .then(() => {
+         return fetchCommentsByArticleId(article_id)
         })
         .then((comments) => {
             response.status(200).send({ comments }) 
