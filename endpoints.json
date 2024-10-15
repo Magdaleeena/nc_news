@@ -104,6 +104,21 @@
         "comment_count": 11
       }
     }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "Deletes a comment by comment_id.",
+    "queries": [],
+    "responses": {
+        "204": {
+            "description": "Comment deleted successfully."
+        },
+        "404": {
+            "description": "Comment not found."
+        },
+        "400": {
+            "description": "Invalid type if comment_id is not a number."
+        }
+    }
   }
 }
 
