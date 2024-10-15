@@ -4,7 +4,7 @@ const endpoints = require("./endpoints.json");
 
 const { psqlErrorHandlerOne, psqlErrorHandlerTwo, psqlErrorHandlerThree, customErrorHandler, serverErrorHandler } = require("./error-handlers");
 
-const { getAllTopics, getArticlesById, getAllArticles, getCommentsByArticleId, createComment, patchArticleVotes, deleteComment } = require("./controllers/news-controllers");
+const { getAllTopics, getArticlesById, getAllArticles, getCommentsByArticleId, createComment, patchArticleVotes, deleteComment, getAllUsers } = require("./controllers/news-controllers");
 
 app.use(express.json());
 
@@ -24,7 +24,9 @@ app.post("/api/articles/:article_id/comments", createComment);
 
 app.patch("/api/articles/:article_id", patchArticleVotes);
 
-app.delete("/api/comments/:comment_id", deleteComment)
+app.delete("/api/comments/:comment_id", deleteComment);
+
+app.get("/api/users", getAllUsers);
 
 app.all("*", (request, response, next) => {
     response.status(404).send({msg: 'Path not found'})
