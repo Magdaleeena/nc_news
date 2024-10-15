@@ -1,4 +1,4 @@
-const { fetchAllTopics, fetchArticleById, fetchAllArticles, fetchCommentsByArticleId, addComment } = require("../models/news-models")
+const { fetchAllTopics, fetchArticleById, fetchAllArticles, fetchCommentsByArticleId, addComment, updateArticleVotes } = require("../models/news-models")
 
 exports.getAllTopics = (request, response, next) => {
     fetchAllTopics()
@@ -71,4 +71,19 @@ exports.createComment = (request, response, next) => {
         }
         next(error);
     })
+}
+
+exports.patchArticleVotes = (request, response, next) => {
+    const { article_id } = request.params;
+    const { inc_votes } = request.body;
+
+     if(typeof inc_votes !== 'number'){
+        return next({ status: 400, msg: 'Invalid type'})
+    }
+
+    updateArticleVotes(article_id, inc_votes)
+    .then((updated) => {
+        response.status(200).send({ article: updated})
+    })
+    .catch(next);
 }
