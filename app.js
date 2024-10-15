@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const endpoints = require("./endpoints.json");
 
-const { psqlErrorHandlerOne, psqlErrorHandlerTwo, customErrorHandler, serverErrorHandler } = require("./error-handlers");
+const { psqlErrorHandlerOne, psqlErrorHandlerTwo, psqlErrorHandlerThree, customErrorHandler, serverErrorHandler } = require("./error-handlers");
 const { getAllTopics, getArticlesById, getAllArticles, getCommentsByArticleId, createComment, patchArticleVotes } = require("./controllers/news-controllers");
 
 app.use(express.json());
@@ -30,6 +30,8 @@ app.all("*", (request, response, next) => {
 app.use(psqlErrorHandlerOne);
   
 app.use(psqlErrorHandlerTwo);
+
+app.use(psqlErrorHandlerThree);
  
 app.use(customErrorHandler); 
 

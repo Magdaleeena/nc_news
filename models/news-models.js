@@ -72,6 +72,9 @@ exports.addComment = (article_id, { body, author }) => {
         VALUES ($1, $2, $3, NOW())
         RETURNING *`, [body, author, article_id])
     .then(({ rows }) => {
+        if(rows.length === 0) {
+            return Promise.reject({status: 404, msg: 'Article not found'})
+        }
         return rows[0];
     })
 
