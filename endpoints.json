@@ -119,6 +119,19 @@
             "description": "Invalid type if comment_id is not a number."
         }
     }
+  },
+  "GET /api/users": {
+  "description": "serves an array of all users",
+  "queries": [],
+  "exampleResponse": {
+    "users": [
+      {
+        "username": "butter_bridge",
+        "name": "Butter Bridge",
+        "avatar_url": "https://example.com/avatar2.png"
+      }
+    ]
   }
+}
 }
 

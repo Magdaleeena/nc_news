@@ -354,3 +354,31 @@ describe("DELETE - /api/comments/:comment_id", () => {
     })
 })
 
+describe("GET - /api/users", () => {
+    it("GET:200 - responds with an array of users", () => {
+        return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then(({ body }) => {
+            expect(body).toBeInstanceOf(Array)
+            expect(body.length).not.toBe(0)
+            body.forEach(user => {
+                expect(user).toHaveProperty('username', expect.any(String))
+                expect(user).toHaveProperty('name', expect.any(String))
+                expect(user).toHaveProperty('avatar_url', expect.any(String))
+            })
+        })
+    })
+    describe("Error handling", () => {
+        it("GET:404 - responds with an error when an invalid route is accessed", () => {
+            return request(app)
+            .get("/api/isers")
+            .expect(404)
+            .then(({body}) => {
+                expect(body.msg).toBe('Path not found')
+            })
+        })
+    })
+})
+
+
