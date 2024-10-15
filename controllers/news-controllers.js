@@ -65,12 +65,7 @@ exports.createComment = (request, response, next) => {
     .then((comment) => {
         response.status(201).send({ comment})
     })
-    .catch((error) => {
-        if (error.code === '23503') {
-            response.status(404).send({ msg: 'Article not found' });
-        }
-        next(error);
-    })
+    .catch(next)
 }
 
 exports.patchArticleVotes = (request, response, next) => {

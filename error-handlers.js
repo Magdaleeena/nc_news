@@ -11,6 +11,13 @@ exports.psqlErrorHandlerTwo = (error, request, response, next) => {
       next(error)
 }
 
+exports.psqlErrorHandlerThree = (error, request, response, next) => {
+    if(error.code === '23503'){
+        response.status(404).send({msg: 'Not found'})
+      }
+      next(error)
+}
+
 exports.customErrorHandler = (error, request, response, next) => {
     if(error.status && error.msg){
         response.status(error.status).send({msg: error.msg})

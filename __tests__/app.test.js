@@ -176,7 +176,7 @@ describe("GET - /api/articles/:article_id/comments", () => {
 })
 
 describe("POST - /api/articles/:article_id/comments", () => {
-    it("POST:200 - adds a new comment and returns it", () => {
+    it("POST:201 - adds a new comment and returns it", () => {
         const newComment = {
             body: "This is so inspiring! Really great article.",
             username: "butter_bridge"
@@ -226,7 +226,33 @@ describe("POST - /api/articles/:article_id/comments", () => {
             .send(newComment)
             .expect(404)
             .then(({ body }) => {
-                expect(body).toEqual({ msg: 'Article not found' })
+                expect(body).toEqual({ msg: 'Not found' })
+            })
+        })
+        it("POST:400 - returns an error for invalid article_id such as string", () => {
+            const newComment = {
+                body: "This is so inspiring!",
+                username: "butter_bridge"
+            }
+            return request(app)
+            .post("/api/articles/abc/comments")
+            .send(newComment)
+            .expect(400)
+            .then(({ body }) => {
+                expect(body).toEqual({ msg: 'Invalid type' })
+            })
+        })
+        it("POST:404 - returns an error when username does not exist", () => {
+            const newComment = {
+                body: "This is so inspiring!",
+                username: "non-existent-user"
+            }
+            return request(app)
+            .post("/api/articles/1/comments")
+            .send(newComment)
+            .expect(404)
+            .then(({ body }) => {
+                expect(body).toEqual({ msg: 'Not found' })
             })
         })
     })
