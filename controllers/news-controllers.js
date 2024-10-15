@@ -72,10 +72,6 @@ exports.patchArticleVotes = (request, response, next) => {
     const { article_id } = request.params;
     const { inc_votes } = request.body;
 
-     if(typeof inc_votes !== 'number'){
-        return next({ status: 400, msg: 'Invalid type'})
-    }
-
     updateArticleVotes(article_id, inc_votes)
     .then((updated) => {
         response.status(200).send({ article: updated})

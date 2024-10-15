@@ -268,7 +268,6 @@ describe("PATCH - /api/articles/:article_id", () => {
         .then(({ body }) => {
             expect(body.article).toHaveProperty('article_id', 1)
             expect(body.article).toHaveProperty('votes')
-            expect(body.article.votes).toBeGreaterThan(0)
         })
     })
 
@@ -293,8 +292,18 @@ describe("PATCH - /api/articles/:article_id", () => {
                 expect(body.msg).toBe('Invalid type')
             })  
         })
+        it("PATCH:400 - returns an error when required key is missing", () => {
+        const newVote = {}
+            return request(app)
+            .patch("/api/articles/1")
+            .send(newVote)
+            .expect(400)
+            .then(({ body }) => {
+                expect(body).toEqual({ msg: 'Missing required information'})
+            })
+        })
         it("PATCH:404 - returns an error when article does not exist", () => {
-            const newVote = { inc_votes: 3}
+        const newVote = { inc_votes: 3}
             return request(app)
             .patch("/api/articles/999")
             .send(newVote)

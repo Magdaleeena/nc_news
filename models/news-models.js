@@ -81,6 +81,14 @@ exports.addComment = (article_id, { body, author }) => {
 }
 
 exports.updateArticleVotes = (article_id, inc_votes) => {
+    if (inc_votes === undefined) {
+        return Promise.reject({ status: 400, msg: 'Missing required information' })
+    }
+
+    if (typeof inc_votes !== 'number') {
+        return Promise.reject({ status: 400, msg: 'Invalid type' })
+    }
+
     return db.query(`UPDATE articles SET votes = votes + $1
         WHERE article_id = $2
         RETURNING *`, [inc_votes, article_id])
@@ -90,7 +98,6 @@ exports.updateArticleVotes = (article_id, inc_votes) => {
         }
        return rows[0];
     })
-  
 }
 
 exports.removeComment = (comment_id) => {
