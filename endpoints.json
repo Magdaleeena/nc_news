@@ -66,5 +66,24 @@
           }
         ]
       }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "Adds a new comment for an article. Request body accepts an object with 'username' and 'body'. Responds with the posted comment.",
+    "queries": [],
+    "requestBody": {
+      "username": "string required",
+      "body": "string required"
+    },
+    "exampleResponse": {
+      "comment": {
+        "comment_id": 6,
+        "votes": 0,
+        "created_at": "2024-10-15T12:00:00.000Z",
+        "author": "butter_bridge",
+        "body": "This is so inspiring! Really great article.",
+        "article_id": 5
+      }
+    }
   }
 }
+
