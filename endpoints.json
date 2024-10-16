@@ -30,7 +30,7 @@
     }
   },
   "GET /api/articles/:article_id": {
-    "description": "serves an array of articles by Id",
+    "description": "serves an array of articles by Id, including total comment count.",
     "queries": [],
     "exampleResponse": {
       "article": { 

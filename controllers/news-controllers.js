@@ -14,17 +14,9 @@ exports.getArticlesById = (request, response, next) => {
     const { article_id } = request.params;
     fetchArticleById(article_id)
     .then((articleData) => {
-        if(!articleData) {
-            response.status(404).send({msg: 'Article not found'})
-        }
         response.status(200).send({article: articleData})
     })
-    .catch((error) => {
-        if(error.code === '22P02') {
-            response.status(400).send({msg: 'Invalid article ID'})
-        }
-        next(error)
-    })
+    .catch(next)
 }
 
 exports.getAllArticles = (request, response, next) => {
