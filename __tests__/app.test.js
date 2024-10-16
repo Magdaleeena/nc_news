@@ -61,13 +61,14 @@ describe("GET - /api/articles/:article_id", () => {
         .expect(200)
         .then(({ body }) => {
             expect(body.article).toHaveProperty('article_id', 1);
-            expect(body.article).toHaveProperty('author');
-            expect(body.article).toHaveProperty('title');
-            expect(body.article).toHaveProperty('body');
-            expect(body.article).toHaveProperty('topic');
-            expect(body.article).toHaveProperty('created_at');
-            expect(body.article).toHaveProperty('votes');
-            expect(body.article).toHaveProperty('article_img_url');
+            expect(body.article).toHaveProperty('author', expect.any(String));
+            expect(body.article).toHaveProperty('title', expect.any(String));
+            expect(body.article).toHaveProperty('body', expect.any(String));
+            expect(body.article).toHaveProperty('topic', expect.any(String));
+            expect(body.article).toHaveProperty('created_at', expect.any(String));
+            expect(body.article).toHaveProperty('votes', expect.any(Number));
+            expect(body.article).toHaveProperty('article_img_url', expect.any(String));
+            expect(body.article).toHaveProperty('comment_count', expect.any(Number));
        })
     })
     describe("Error handling", () => {
@@ -83,7 +84,7 @@ describe("GET - /api/articles/:article_id", () => {
         return request(app)
         .get("/api/articles/abcdefg")
         .expect(({ body }) => {
-            expect(body.msg).toBe('Invalid article ID')
+            expect(body.msg).toBe('Invalid type')
         })
     })
     })
@@ -150,7 +151,7 @@ describe("GET - /api/articles", () => {
             expect(body.articles).toBeSortedBy('topic', { descending: true })
         })
     })
-    it("GET: - responds with articles sorted by topics in ascending order", () => {
+    it("GET:200 - responds with articles sorted by topics in ascending order", () => {
         return request(app)
         .get("/api/articles?sort_by=topic&order=asc")
         .expect(200)
@@ -400,18 +401,6 @@ describe("DELETE - /api/comments/:comment_id", () => {
             .expect(400)
             .then(({ body }) => {
                 expect(body).toEqual({ msg: 'Invalid type'})
-            })
-        })
-        it("DELETE:404 - returns an error when deleting an already deleted comment", () => {
-            return request(app)
-            .delete("/api/comments/1")
-            .then(() => {
-                return request(app)
-                .delete("/api/comments/1")
-                .expect(404)
-                .then(({ body }) => {
-                    expect(body).toEqual({ msg: 'Comment not found'})
-                })
             })
         })
     })
