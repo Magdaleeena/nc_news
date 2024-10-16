@@ -8,8 +8,8 @@ exports.getAllTopics = (request, response, next) => {
     .catch((error) => {
         next(error)
     })
-
 }
+
 exports.getArticlesById = (request, response, next) => {
     const { article_id } = request.params;
     fetchArticleById(article_id)
@@ -37,12 +37,7 @@ exports.getCommentsByArticleId = (request, response, next) => {
         .then((comments) => {
             response.status(200).send({ comments }) 
         })
-        .catch((error) => {
-            if (error.code === '22P02') {
-                response.status(400).send({ msg: 'Invalid article ID' });
-            }
-            next(error);
-        })
+        .catch(next)
 }
 
 exports.createComment = (request, response, next) => {
@@ -68,7 +63,7 @@ exports.patchArticleVotes = (request, response, next) => {
     .then((updated) => {
         response.status(200).send({ article: updated})
     })
-    .catch(next);
+    .catch(next)
 }
 
 exports.deleteComment = (request, response, next) => {
