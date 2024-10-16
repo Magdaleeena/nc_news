@@ -10,7 +10,7 @@
     }
   },
   "GET /api/articles": {
-    "description": "serves an array of all articles with optional sorting by specified columns (sort_by) and order (asc/desc).",
+    "description": "serves an array of all articles with optional filtering by topic and sorting by specified columns (sort_by) and order (asc/desc). If the topic query is omitted, all articles will be returned.",
     "queries": ["author", "topic", "sort_by", "order"],
     "validSortBys": ["created_at", "title", "votes", "author", "topic", "article_img_url", "comment_count"],
     "validOrders": ["asc", "desc"],

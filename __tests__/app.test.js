@@ -142,6 +142,22 @@ describe("GET - /api/articles", () => {
             expect(body.articles).toBeSortedBy('comment_count', { descending: true })
         })
     })
+    it("GET:200 - responds with articles sorted by topics in default order", () => {
+        return request(app)
+        .get("/api/articles?sort_by=topic")
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.articles).toBeSortedBy('topic', { descending: true })
+        })
+    })
+    it("GET: - responds with articles sorted by topics in ascending order", () => {
+        return request(app)
+        .get("/api/articles?sort_by=topic&order=asc")
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.articles).toBeSortedBy('topic', { ascending: true })
+        })
+    })
     describe("Error handling", () => {
         it("GET:400 - returns an error when order is invalid", () => {
             return request(app)
@@ -158,6 +174,14 @@ describe("GET - /api/articles", () => {
                 expect(body).toEqual({ msg: 'Bad request'})
             })
         })
+        it("GET:400 - returns an error for invalid data types", () => {
+            return request(app)
+            .get("/api/articles?order=invalid_order&sort_by=votes")
+            .expect(400)
+            .then(({ body }) => {
+                expect(body).toEqual({ msg: 'Invalid order query' })
+            })
+        })
         it("GET:404 - returns an error when the topic does not exist", () => {
             return request(app)
             .get("/api/articles?topic=nonexistent_topic")
@@ -166,12 +190,12 @@ describe("GET - /api/articles", () => {
                 expect(body).toEqual({ msg: 'Not found' });
             }) 
         })
-        it("GET:400 - returns an error for invalid data types", () => {
+        it("GET:400 - returns an error for invalid topic format", () => {
             return request(app)
-            .get("/api/articles?order=invalid_order&sort_by=votes")
+            .get("/api/articles?topic=999")
             .expect(400)
             .then(({ body }) => {
-                expect(body).toEqual({ msg: 'Invalid order query' })
+                expect(body.msg).toBe('Invalid type')
             })
         })
     })

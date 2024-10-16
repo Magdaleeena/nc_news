@@ -26,6 +26,10 @@ exports.fetchAllArticles = (sort_by = "created_at", order = "desc", topic) => {
         return Promise.reject({status: 400, msg: 'Invalid order query'})
     }
 
+    if (topic && (!String(topic) || !isNaN(topic))) {
+        return Promise.reject({ status: 400, msg: 'Invalid type' })
+    }
+   
     let queryString = `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, 
         COUNT(comments.article_id):: INT AS comment_count
         FROM articles
@@ -39,6 +43,8 @@ exports.fetchAllArticles = (sort_by = "created_at", order = "desc", topic) => {
     }
 
     queryString += ` GROUP BY articles.article_id ORDER BY ${sort_by} ${order}`;
+
+    
 
     return db.query(queryString, queryValues)
     .then(({ rows }) => {
