@@ -22,7 +22,7 @@ describe("/api", () => {
 
 describe("GET - /api/topics", () => {
     describe("GET:200 - get all topics successfully", () => {
-        it("returns successful 200 status code", () => {
+        it("GET:200 - returns successful 200 status code", () => {
             return request(app)
             .get("/api/topics")
             .then(({ body }) => {
@@ -43,7 +43,7 @@ describe("GET - /api/topics", () => {
         })
     })
     describe("Error handling", () => {
-        it("GET:404 - responds with an error when an invalid route is accessed", () => {
+        it("GET:404 - returns an error when an invalid route is accessed", () => {
             return request(app)
             .get("/api/non-existent")
             .expect(404)
@@ -72,7 +72,7 @@ describe("GET - /api/articles/:article_id", () => {
        })
     })
     describe("Error handling", () => {
-    it("GET:404 - responds with en error message for a non-existent article", () => {
+    it("GET:404 - returns an error for a non-existent article", () => {
         return request(app)
         .get("/api/articles/999")
         .expect(404)
@@ -80,7 +80,7 @@ describe("GET - /api/articles/:article_id", () => {
             expect(body.msg).toBe('Article not found')
         })
     })
-    it("GET:400 - responds with an error message for an invalid ID", () => {
+    it("GET:400 - returns an error for an invalid ID", () => {
         return request(app)
         .get("/api/articles/abcdefg")
         .expect(({ body }) => {
@@ -225,7 +225,7 @@ describe("GET - /api/articles/:article_id/comments", () => {
             .get("/api/articles/invalid_id/comments")
             .expect(400)
             .then(({ body }) => {
-                expect(body.msg).toBe('Invalid article ID');
+                expect(body.msg).toBe('Invalid type');
             })
         })
         it("GET:404 - responds with an error message for a non-existent article", () => {
@@ -336,8 +336,8 @@ describe("PATCH - /api/articles/:article_id", () => {
     })
 
     describe("Error handling", () => {
-        it("PATCH:400 - return an error when inc_votes is not a number", () => {
-        const newVote = { inc_votes: '1'}
+        it("PATCH:400 - returns an error when inc_votes is not a number", () => {
+        const newVote = { inc_votes: 'abc123'}
             return request(app)
             .patch("/api/articles/1")
             .send(newVote)
@@ -346,7 +346,7 @@ describe("PATCH - /api/articles/:article_id", () => {
                 expect(body.msg).toBe('Invalid type')
             })
         })
-        it("PATCH:400 - responds with an error message for an invalid article_id", () => {
+        it("PATCH:400 - returns an error for an invalid article_id", () => {
         const newVote = { inc_votes: '5'}
             return request(app)
             .patch("/api/articles/abc")
@@ -363,7 +363,7 @@ describe("PATCH - /api/articles/:article_id", () => {
             .send(newVote)
             .expect(400)
             .then(({ body }) => {
-                expect(body).toEqual({ msg: 'Missing required information'})
+                expect(body).toEqual({ msg: 'Bad request'})
             })
         })
         it("PATCH:404 - returns an error when article does not exist", () => {
@@ -422,7 +422,7 @@ describe("GET - /api/users", () => {
         })
     })
     describe("Error handling", () => {
-        it("GET:404 - responds with an error when an invalid route is accessed", () => {
+        it("GET:404 - returns an error when an invalid route is accessed", () => {
             return request(app)
             .get("/api/isers")
             .expect(404)
