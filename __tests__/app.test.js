@@ -98,25 +98,49 @@ describe("GET - /api/articles", () => {
             expect(Array.isArray(body.articles)).toBe(true);
             expect(body.articles.length).not.toBe(0);
             body.articles.forEach(article => {
-                expect(article).toHaveProperty('author');
-                expect(article).toHaveProperty('title');
-                expect(article).toHaveProperty('article_id');
-                expect(article).toHaveProperty('topic');
-                expect(article).toHaveProperty('created_at');
-                expect(article).toHaveProperty('votes');
-                expect(article).toHaveProperty('article_img_url');
-                expect(article).toHaveProperty('comment_count');
+                expect(article).toHaveProperty('author', expect.any(String));
+                expect(article).toHaveProperty('title', expect.any(String));
+                expect(article).toHaveProperty('article_id', expect.any(Number));
+                expect(article).toHaveProperty('topic', expect.any(String));
+                expect(article).toHaveProperty('created_at', expect.any(String));
+                expect(article).toHaveProperty('votes', expect.any(Number));
+                expect(article).toHaveProperty('article_img_url', expect.any(String));
+                expect(article).toHaveProperty('comment_count', expect.any(Number));
                 expect(article).not.toHaveProperty('body'); 
             })
         })
     })
     it("GET:200 - responds with articles sorted by created_at in descending order", () => {
         return request(app)
-            .get("/api/articles")
-            .expect(200)
-            .then(({ body }) => {
-                expect(body.articles).toBeSortedBy('created_at', { descending: true });
-            });
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.articles).toBeSortedBy('created_at', { descending: true });
+        })
+    })
+    it("GET:200 - responds with articles sorted by title in ascending order", () => {
+        return request(app)
+        .get("/api/articles?sort_by=title&order=asc")
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.articles).toBeSortedBy('title', { ascending: true });
+        })
+    })
+    it("GET:200 - responds with articles sorted by votes in descending order", () => {
+        return request(app)
+        .get("/api/articles?sort_by=votes&order=desc")
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.articles).toBeSortedBy('votes', { descending: true })
+        })
+    })
+    it("GET:200 - responds with articles sorted by comment_count in default order", () => {
+        return request(app)
+        .get("/api/articles?sort_by=comment_count")
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.articles).toBeSortedBy('comment_count', { descending: true })
+        })
     })
     describe("Error handling", () => {
         it("GET:400 - returns an error when order is invalid", () => {
@@ -124,7 +148,14 @@ describe("GET - /api/articles", () => {
             .get("/api/articles?order=invalid_order")
             .expect(400)
             .then(({ body }) => {
-                expect(body).toEqual({ msg: "Invalid order query" })
+                expect(body).toEqual({ msg: 'Invalid order query' })
+            })
+        })
+        it("GET:400 - returns an error when sort_by is invalid", () => {
+            return request(app)
+            .get("/api/articles?sort_by=invalid_column")
+            .expect(({ body }) => {
+                expect(body).toEqual({ msg: 'Bad request'})
             })
         })
         it("GET:404 - returns an error when the topic does not exist", () => {
@@ -132,8 +163,16 @@ describe("GET - /api/articles", () => {
             .get("/api/articles?topic=nonexistent_topic")
             .expect(404)
             .then(({ body }) => {
-                expect(body).toEqual({ msg: "Not found" });
+                expect(body).toEqual({ msg: 'Not found' });
             }) 
+        })
+        it("GET:400 - returns an error for invalid data types", () => {
+            return request(app)
+            .get("/api/articles?order=invalid_order&sort_by=votes")
+            .expect(400)
+            .then(({ body }) => {
+                expect(body).toEqual({ msg: 'Invalid order query' })
+            })
         })
     })
 })
