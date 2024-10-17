@@ -33,11 +33,7 @@ exports.fetchAllArticles = (sort_by = "created_at", order = "desc", topic) => {
 
     if(!validOrders.includes(order)) {
         return Promise.reject({status: 400, msg: 'Invalid order query'})
-    }
-
-    if (topic && (!String(topic) || !isNaN(topic))) {
-        return Promise.reject({ status: 400, msg: 'Invalid type' })
-    }
+    }   
    
     let queryString = `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, 
         COUNT(comments.article_id):: INT AS comment_count
@@ -56,7 +52,7 @@ exports.fetchAllArticles = (sort_by = "created_at", order = "desc", topic) => {
     return db.query(queryString, queryValues)
     .then(({ rows }) => {
         if(rows.length === 0) {
-            return Promise.reject({status: 404, msg: 'Not found'})
+            return Promise.reject({status: 404, msg: 'Not found' })
         }
         return rows;
     })

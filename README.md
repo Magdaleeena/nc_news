@@ -13,9 +13,9 @@ To clone the project, follow these steps:
 
 Next, you will need to create the necessary environment variables to run it locally:
 1. Create a file named .env.test in the root directory of the project to configure your testing database.
-2. In the .env.test file, declare the variable PGDATABASE=nc_news_test.
+2. In the .env.test file, declare the variable PGDATABASE=[database_name, remove brackets]_test.
 3. Similarly, create a file named .env.development in the root directory for your development database.
-4. In the development file, specify PGDATABASE=nc_news.
+4. In the development file, specify PGDATABASE=[database_name, remove brackets]_dev.
 
 To set up the project, execute the following commands in your terminal:
 1. npm i - to install all necessary dependencies.
