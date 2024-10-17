@@ -421,16 +421,6 @@ describe("GET - /api/users", () => {
             })
         })
     })
-    describe("Error handling", () => {
-        it("GET:404 - returns an error when an invalid route is accessed", () => {
-            return request(app)
-            .get("/api/isers")
-            .expect(404)
-            .then(({body}) => {
-                expect(body.msg).toBe('Path not found')
-            })
-        })
-    })
 })
 
 

@@ -53,8 +53,6 @@ exports.fetchAllArticles = (sort_by = "created_at", order = "desc", topic) => {
 
     queryString += ` GROUP BY articles.article_id ORDER BY ${sort_by} ${order}`;
 
-    
-
     return db.query(queryString, queryValues)
     .then(({ rows }) => {
         if(rows.length === 0) {
@@ -87,7 +85,6 @@ exports.addComment = (article_id, { body, author }) => {
         }
         return rows[0];
     })
-
 }
 
 exports.updateArticleVotes = (article_id, inc_votes) => {
