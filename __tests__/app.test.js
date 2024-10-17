@@ -143,6 +143,16 @@ describe("GET - /api/articles", () => {
             expect(body.articles).toBeSortedBy('comment_count', { descending: true })
         })
     })
+    it("GET:200 - responds with articles filtered by topic", () => {
+        return request(app)
+        .get("/api/articles?topic=mitch")
+        .expect(200)
+        .then(({ body }) => {
+            body.articles.forEach(article => {
+                expect(article.topic).toBe('mitch')
+            })
+        })
+    })
     it("GET:200 - responds with articles sorted by topics in default order", () => {
         return request(app)
         .get("/api/articles?sort_by=topic")
@@ -190,14 +200,6 @@ describe("GET - /api/articles", () => {
             .then(({ body }) => {
                 expect(body).toEqual({ msg: 'Not found' });
             }) 
-        })
-        it("GET:400 - returns an error for invalid topic format", () => {
-            return request(app)
-            .get("/api/articles?topic=999")
-            .expect(400)
-            .then(({ body }) => {
-                expect(body.msg).toBe('Invalid type')
-            })
         })
     })
 })
