@@ -32,7 +32,7 @@ exports.getCommentsByArticleId = (request, response, next) => {
     const { article_id } = request.params;
     fetchArticleById(article_id)
     .then(() => {
-         return fetchCommentsByArticleId(article_id)
+        return fetchCommentsByArticleId(article_id)
         })
         .then((comments) => {
             response.status(200).send({ comments }) 
