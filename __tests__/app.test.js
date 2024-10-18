@@ -449,4 +449,67 @@ describe("GET - /api/users/:username", () => {
     })
 })
 
-
+describe("PATCH - /api/comments/:comment_id", () => {
+    it("PATCH:200 - updates the comments votes and responds with the updated comment", () => {
+        const newVote = { inc_votes: -1}
+        return request(app)
+        .patch("/api/comments/1")
+        .send(newVote)
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.comment).toHaveProperty('comment_id', 1)
+            expect(body.comment).toHaveProperty('votes', expect.any(Number))
+            expect(body.comment.votes).toBe(15)
+        })
+    })
+    describe("Error handling", () => {
+        it("PATCH:404 - returns an error if comment does not exists", () => {
+            return request(app)
+            .patch("/api/comments/999")
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Comment not found')
+            })
+        })
+        it("PATCH:400 - returns an error if the request body is invalid", () => {
+            const newVote = { vote: 1}
+            return request(app)
+            .patch("/api/comments/1")
+            .send(newVote)
+            .expect(400)
+            .then(({ body }) => {
+                expect(body).toEqual({ msg: 'Bad request'})
+            })
+        })
+        it("PATCH:400 - returns an error when required key is missing", () => {
+            const newVote = {}
+            return request(app)
+            .patch("/api/comments/1")
+            .send(newVote)
+            .expect(400)
+            .then(({ body }) => {
+                expect(body).toEqual({ msg: 'Bad request'})
+            })
+        })
+        it("PATCH:400 - returns an error for an invalid comment_id", () => {
+            const newVote = { inc_votes: '5'}
+            return request(app)
+            .patch("/api/comments/abc")
+            .send(newVote)
+            .expect(400) 
+            .then(({ body }) => {
+                expect(body.msg).toBe('Invalid type')                
+            })  
+        })
+        it("PATCH:400 - returns an error when inc_votes is not a number", () => {
+            const newVote = { inc_votes: 'abc123'}
+            return request(app)
+            .patch("/api/comments/1")
+            .send(newVote)
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Invalid type')
+            })
+        })   
+    })
+})
