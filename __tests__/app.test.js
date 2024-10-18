@@ -513,3 +513,101 @@ describe("PATCH - /api/comments/:comment_id", () => {
         })   
     })
 })
+
+describe("POST - /api/articles", () => {
+    it("POST:201 - adds a new comment and returns it", () => {
+        const newArticle = {
+        author: "butter_bridge",
+        title: "Love your pets",
+        body: "Dogs and cats are cool.",
+        topic: "mitch",
+        article_img_url: "https://example.com/image.png"
+        }
+        return request(app)
+        .post("/api/articles")
+        .send(newArticle)
+        .expect(201)
+        .then(({ body }) => {
+            expect(body.article).toEqual(expect.objectContaining({
+                article_id: expect.any(Number), 
+                article_img_url: newArticle.article_img_url,
+                author: newArticle.author,
+                body: newArticle.body,
+                title: newArticle.title,
+                topic: newArticle.topic,
+                votes: 0,
+                comment_count: expect.any(Number),
+                created_at: expect.any(String)
+                }))
+            })
+        })
+    it("POST:201 - adds a new comment and returns it when missing image URL", () => {
+        const newArticle = {
+        author: "butter_bridge",
+        title: "Love your pets",
+        body: "Dogs and cats are cool.",
+        topic: "mitch",
+        }
+            return request(app)
+            .post("/api/articles")
+            .send(newArticle)
+            .expect(201)
+            .then(({ body }) => {
+                expect(body.article).toHaveProperty('article_id', expect.any(Number));
+                expect(body.article).toHaveProperty('author', newArticle.author);
+                expect(body.article).toHaveProperty('body', newArticle.body);
+                expect(body.article).toHaveProperty('title', newArticle.title);
+                expect(body.article).toHaveProperty('topic', newArticle.topic);
+                expect(body.article).toHaveProperty('article_img_url', "https://images.pexels.com/photos/9809436/pexels-photo-9809436.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2")
+                expect(body.article).toHaveProperty('votes', 0);
+                expect(body.article).toHaveProperty('comment_count', expect.any(Number));
+                expect(body.article).toHaveProperty('created_at', );
+            })
+    })
+    describe("Error handling", () => {
+        it("POST:400 - returns an error if required fields are missing", () => {
+        const newArticle = {
+        title: "New moon", 
+        body: "Happy holiday to everybody. Enjoy the break!"
+        }
+            return request(app)
+            .post("/api/articles")
+            .send(newArticle)
+            .expect(400)
+            .then(({ body }) => {
+                expect(body).toEqual({ msg: 'Missing required fields'})
+            })   
+        })
+        it("POST:404 - returns an error for non-existent author", () => {
+        const newArticle = {
+        author: "non-existent-author",
+        title: "Beautiful times", 
+        body: "Book some holiday, spend time with family and relax.", 
+        topic: "mitch"
+        }
+            return request(app)
+            .post("/api/articles")
+            .send(newArticle)
+            .expect(404)
+            .then(({ body }) => {
+                expect(body).toEqual({ msg: 'Not found'})
+            })
+        })
+        it("POST:404 - returns an error for a topic which does not exist in the database", () => {
+        const newArticle = {
+        author: "butter_bridge",
+        title: "Be kind to animals", 
+        body: "Book some holiday, spend time with family and relax.", 
+        topic: "dogs"
+        }
+            return request(app)
+            .post("/api/articles")
+            .send(newArticle)
+            .expect(404)
+            .then(({ body }) => {
+                expect(body).toEqual({ msg: 'Not found'})
+            })
+        })
+        
+    })
+})
