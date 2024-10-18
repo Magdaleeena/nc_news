@@ -1,4 +1,4 @@
-const { fetchAllTopics, fetchArticleById, fetchAllArticles, fetchCommentsByArticleId, addComment, updateArticleVotes, removeComment, fetchAllUsers } = require("../models/news-models")
+const { fetchAllTopics, fetchArticleById, fetchAllArticles, fetchCommentsByArticleId, addComment, updateArticleVotes, removeComment, fetchAllUsers, fetchUserByUsername } = require("../models/news-models")
 
 const endpoints = require("../endpoints.json")
 
@@ -86,6 +86,15 @@ exports.getAllUsers = (request, response, next) => {
     fetchAllUsers()
     .then((users) => {
         response.status(200).send(users)
+    })
+    .catch(next)
+}
+
+exports.getUserByUsername = (request, response, next) => {
+    const { username } = request.params;
+    fetchUserByUsername(username)
+    .then((user) => {
+        response.status(200).send({ user })
     })
     .catch(next)
 }

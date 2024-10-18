@@ -1,8 +1,12 @@
 const usersRouter = require("express").Router();
-const { getAllUsers } = require("../controllers/news-controllers");
+const { getAllUsers, getUserByUsername } = require("../controllers/news-controllers");
 
 usersRouter
     .route("/")
     .get(getAllUsers)
+
+usersRouter
+    .route("/:username")
+    .get(getUserByUsername)
    
 module.exports = usersRouter;
