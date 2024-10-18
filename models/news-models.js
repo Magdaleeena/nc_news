@@ -132,3 +132,16 @@ exports.updateCommentVotes = (comment_id, inc_votes) => {
        return rows[0];
     })
 }
+
+exports.addArticle = ({ title, topic, author, body, article_img_url }) => { 
+    return db.query(`
+        INSERT INTO articles (title, topic, author, body, article_img_url, created_at, votes)
+        VALUES ($1, $2, $3, $4, $5, NOW(), 0) RETURNING *;`, [title, topic, author, body, article_img_url])
+        .then(({ rows }) => {
+            const article = rows[0];
+            return {
+                ...article,
+                comment_count: 0, 
+            }
+    })
+}

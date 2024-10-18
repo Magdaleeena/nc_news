@@ -1,4 +1,4 @@
-const { fetchAllTopics, fetchArticleById, fetchAllArticles, fetchCommentsByArticleId, addComment, updateArticleVotes, removeComment, fetchAllUsers, fetchUserByUsername, updateCommentVotes } = require("../models/news-models")
+const { fetchAllTopics, fetchArticleById, fetchAllArticles, fetchCommentsByArticleId, addComment, updateArticleVotes, removeComment, fetchAllUsers, fetchUserByUsername, updateCommentVotes, addArticle } = require("../models/news-models")
 
 const endpoints = require("../endpoints.json")
 
@@ -108,4 +108,28 @@ exports.patchCommentVotes = (request, response, next) => {
         response.status(200).send({ comment: updatedVotes})
     })
     .catch(next)
+}
+
+exports.postArticle = (request, response, next) => {
+    const { author, title, body, topic, article_img_url } = request.body;
+
+    if (!author || !title || !body || !topic) {
+        return response.status(400).send({ msg: "Missing required fields" });
+    }
+    const defaultImgUrl = "https://images.pexels.com/photos/9809436/pexels-photo-9809436.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2";
+    const imgUrl = article_img_url || defaultImgUrl;
+
+    const newArticle = {
+        author,
+        title,
+        body,
+        topic,
+        article_img_url: imgUrl,
+    };
+
+    addArticle(newArticle)
+        .then((addedArticle) => {
+            response.status(201).send({ article: addedArticle })
+        })
+        .catch(next);
 }
