@@ -425,4 +425,28 @@ describe("GET - /api/users", () => {
     })
 })
 
+describe("GET - /api/users/:username", () => {
+    it("GET:200 - responds with a user object with its properties", () => {
+        return request(app)
+        .get("/api/users/butter_bridge")
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.user).toBeDefined()
+            expect(body.user).toHaveProperty('username', expect.any(String))
+            expect(body.user).toHaveProperty('name', expect.any(String))
+            expect(body.user).toHaveProperty('avatar_url', expect.any(String))
+        })
+    })
+    describe("Error handling", () => {
+        it("GET:404 - returns an error if the user does not exists", () => {
+            return request(app)
+            .get("/api/users/non_existent_user")
+            .expect(404)
+            .then(({ body }) => {
+                expect(body).toEqual({ msg: 'User not found'})
+            })
+        })
+    })
+})
+
 
