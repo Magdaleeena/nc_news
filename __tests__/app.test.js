@@ -561,7 +561,7 @@ describe("POST - /api/articles", () => {
                 expect(body.article).toHaveProperty('article_img_url', "https://images.pexels.com/photos/9809436/pexels-photo-9809436.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2")
                 expect(body.article).toHaveProperty('votes', 0);
                 expect(body.article).toHaveProperty('comment_count', expect.any(Number));
-                expect(body.article).toHaveProperty('created_at', );
+                expect(body.article).toHaveProperty('created_at', expect.any(String) );
             })
     })
     describe("Error handling", () => {
