@@ -3,7 +3,7 @@ Project summary:
 
 The purpose of this project is to build an API to access application data programmatically. The intention is to mimic the building of a real-world backend service (such as Reddit) which should provide this information to the front-end architecture.
 
-To access the hosted version, please visit https://magdaleenas-nc-news.onrender.com/api
+To access the hosted version, please click [here](https://magdaleenas-nc-news.onrender.com/api)
 
 ---
 
